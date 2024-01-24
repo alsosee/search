@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  search:
+    image: getmeili/meilisearch:v1.6.0
+    ports:
+      - 127.0.0.1:7700:7700
+    environment:
+      - MEILI_MASTER_KEY=secret
+      - MEILI_NO_ANALYTICS=true
+      - MEILI_ENV=development
+      - MEILI_HTTP_ADDR=0.0.0.0:7700
+    volumes:
+      - ./index:/meili_data
+
+  indexer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - search
+    environment:
+      - INPUT_HOST=http://search:7700
+      - INPUT_INDEX=/info
+      - INPUT_MASTER_KEY=secret
+    volumes:
+      - ../info:/info
+      - ../media:/media
+      - ./.state:/.state
