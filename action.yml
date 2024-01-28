@@ -1,0 +1,39 @@
+name: Index content
+description: ""
+
+author: Konstantin Chukhlomin <mail@chuhlomin.com>
+
+branding:
+  icon: search
+  color: purple
+
+inputs:
+  info:
+    description: Directory that contains info files
+    required: true
+  media:
+    description: Directory that contains media files
+    required: true
+  state_file:
+    description: Path to state file
+    required: true
+  ignore_file:
+    description: Path to ignore file
+    required: false
+  host:
+    description: Host of MeiliSearch
+    required: true
+  index:
+    description: Index name
+    required: true
+  master_key:
+    description: Master key of MeiliSearch
+    required: true
+  timeout:
+    description: Timeout for MeiliSearch requests
+    required: false
+    default: "5s"
+
+runs:
+  using: docker
+  image: docker://ghcr.io/alsosee/search:latest

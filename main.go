@@ -14,7 +14,7 @@ type config struct {
 	InfoDirectory  string        `env:"INPUT_INFO" short:"i" long:"info" description:"Directory that contains info files" default:"info"`
 	MediaDirectory string        `env:"INPUT_MEDIA" short:"m" long:"media" description:"Directory that contains media files" default:"media"`
 	StateFile      string        `env:"INPUT_STATE_FILE" long:"state-file" description:"path to state file" default:".state"`
-	IgnoreFile     string        `env:"INPUT_IGNORE" short:"g" long:"ignore" description:"Path to .gitignore file" default:".ignore"`
+	IgnoreFile     string        `env:"INPUT_IGNORE_FILE" short:"g" long:"ignore" description:"Path to .gitignore file" default:".ignore"`
 	Host           string        `env:"INPUT_HOST" long:"host" description:"search host" default:"http://127.0.0.1:7700/"`
 	IndexName      string        `env:"INPUT_INDEX" long:"index" description:"search index name" default:"info"`
 	MasterKey      string        `env:"INPUT_MASTER_KEY" long:"master-key" description:"search master key"`

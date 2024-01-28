@@ -1,0 +1,65 @@
+name: index
+
+on:
+  repository_dispatch:
+    types: [index]
+  workflow_dispatch:
+
+concurrency:
+  group: index
+  cancel-in-progress: false
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Clone info
+        uses: actions/checkout@v4
+        with:
+          repository: alsosee/info
+          path: info
+          token: ${{ secrets.PKG_TOKEN }}
+
+      - name: Clone info state
+        uses: actions/checkout@v4
+        with:
+          repository: alsosee/info
+          path: info_state
+          ref: state
+          token: ${{ secrets.PKG_TOKEN }}
+
+      - name: Clone media
+        uses: actions/checkout@v4
+        with:
+          repository: alsosee/media
+          path: media
+          token: ${{ secrets.PKG_TOKEN }}
+
+      - name: Run action
+        uses: ./
+        with:
+          info: ./info
+          media: ./media
+          state_file: ./info_state/.state
+          ignore_file: .ignore
+          host: https://search.chuhlomin.com
+          index: info
+          master_key: ${{ secrets.MEILISEARCH_MASTER_KEY }}
+
+      - name: Commit and push
+        shell: bash
+        run: |
+          cd info_state
+          if [[ -z $(git status --porcelain) ]]; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git config --global user.name 'GitHub Actions (index workflow)'
+          git config --global user.email 'gha@alsosee.info'
+          git add ".state"
+          git commit -m "Update index state [skip ci]"
+          git push origin state
