@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"context"
-	"encoding/json"
 	"fmt"
 	"hash/crc32"
 	"io"
@@ -86,6 +85,9 @@ func (i *Indexer) Index(stateFile, ignoreFile, index string) error {
 		}
 		return nil
 	})
+	if err != nil {
+		return fmt.Errorf("walking directory: %w", err)
+	}
 
 	state, err := readStateFromFile(stateFile)
 	if err != nil {
@@ -173,9 +175,6 @@ func (i *Indexer) addToIndex(paths []string, index string) error {
 		}
 		documents = append(documents, document)
 	}
-
-	// debugPrint(documents)
-	// return fmt.Errorf("not implemented")
 
 	log.Printf("Adding %d documents to index %q", len(documents), index)
 
@@ -402,12 +401,4 @@ var reNonID = regexp.MustCompile("[^a-zA-Z0-9-_]")
 // only composed of alphanumeric characters (a-z A-Z 0-9), hyphens (-) and underscores (_).
 func formatID(id string) string {
 	return reNonID.ReplaceAllString(id, "_")
-}
-
-func debugPrint(in interface{}) {
-	enc := json.NewEncoder(os.Stdout)
-	enc.SetIndent("", "  ")
-	if err := enc.Encode(in); err != nil {
-		panic(err)
-	}
 }

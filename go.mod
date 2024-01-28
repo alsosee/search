@@ -3,7 +3,7 @@ module github.com/alsosee/search
 go 1.21.3
 
 require (
-	github.com/alsosee/finder v0.0.0-20240124032438-f094b1bd81de
+	github.com/alsosee/finder v0.0.0-20240127004115-eed4870f4d9f
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/meilisearch/meilisearch-go v0.26.1
 	github.com/sabhiram/go-gitignore v0.0.0-20210923224102-525f6e181f06
@@ -18,5 +18,5 @@ require (
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.37.1-0.20220607072126-8a320890c08d // indirect
-	golang.org/x/sys v0.0.0-20220227234510-4e6760a101f9 // indirect
+	golang.org/x/sys v0.16.0 // indirect
 )
