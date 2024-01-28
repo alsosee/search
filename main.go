@@ -4,6 +4,7 @@ package main
 
 import (
 	"log"
+	"strings"
 	"time"
 
 	flags "github.com/jessevdk/go-flags"
@@ -30,7 +31,7 @@ func main() {
 
 	client := meilisearch.NewClient(meilisearch.ClientConfig{
 		Host:    cfg.Host,
-		APIKey:  cfg.MasterKey,
+		APIKey:  strings.TrimSpace(cfg.MasterKey),
 		Timeout: cfg.Timeout,
 	})
 
