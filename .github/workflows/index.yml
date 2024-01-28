@@ -26,8 +26,8 @@ jobs:
       - name: Clone info state
         uses: actions/checkout@v4
         with:
-          repository: alsosee/info
-          path: info_state
+          repository: alsosee/finder
+          path: finder_state
           ref: state
           token: ${{ secrets.PKG_TOKEN }}
 
@@ -43,7 +43,7 @@ jobs:
         with:
           info: ./info
           media: ./media
-          state_file: ./info_state/.state
+          state_file: ./finder_state/.state
           ignore_file: .ignore
           host: https://search.chuhlomin.com
           index: info
