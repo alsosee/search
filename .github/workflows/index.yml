@@ -45,9 +45,9 @@ jobs:
           media: ./media
           state_file: ./finder_state/.state
           ignore_file: .ignore
-          host: https://search.chuhlomin.com
+          host: https://search.alsosee.info
           index: info
-          master_key: zAl4S844BioyTyH7z0mFdEYm-bvy6Y1eBNWBHaGGjSU # debug temporary key
+          master_key: ${{ secrets.MEILISEARCH_MASTER_KEY }}
 
       - name: Commit and push
         shell: bash
