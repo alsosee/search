@@ -29,6 +29,8 @@ func main() {
 		log.Fatalf("Error parsing flags: %v", err)
 	}
 
+	log.Printf("Master key: %q", cfg.MasterKey)
+
 	client := meilisearch.NewClient(meilisearch.ClientConfig{
 		Host:    cfg.Host,
 		APIKey:  strings.TrimSpace(cfg.MasterKey),
