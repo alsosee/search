@@ -4,7 +4,6 @@ package main
 
 import (
 	"log"
-	"strings"
 	"time"
 
 	flags "github.com/jessevdk/go-flags"
@@ -29,11 +28,9 @@ func main() {
 		log.Fatalf("Error parsing flags: %v", err)
 	}
 
-	log.Printf("Master key: %q", cfg.MasterKey)
-
 	client := meilisearch.NewClient(meilisearch.ClientConfig{
 		Host:    cfg.Host,
-		APIKey:  strings.TrimSpace(cfg.MasterKey),
+		APIKey:  cfg.MasterKey,
 		Timeout: cfg.Timeout,
 	})
 
