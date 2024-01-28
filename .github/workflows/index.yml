@@ -47,7 +47,7 @@ jobs:
           ignore_file: .ignore
           host: https://search.chuhlomin.com
           index: info
-          master_key: ${{ secrets.MEILISEARCH_MASTER_KEY }}
+          master_key: zAl4S844BioyTyH7z0mFdEYm-bvy6Y1eBNWBHaGGjSU # debug temporary key
 
       - name: Commit and push
         shell: bash
