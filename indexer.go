@@ -176,7 +176,15 @@ func (i *Indexer) addToIndex(paths []string, index string) error {
 		documents = append(documents, document)
 	}
 
+	if len(documents) == 0 {
+		log.Printf("No documents to add to index %q", index)
+		return nil
+	}
+
 	log.Printf("Adding %d documents to index %q", len(documents), index)
+	for _, document := range documents {
+		log.Printf("  %s", document.Source)
+	}
 
 	tasks, err := i.client.Index(index).AddDocumentsInBatches(documents, 100, "ID")
 	if err != nil {
@@ -248,6 +256,9 @@ func (i *Indexer) getImageForPath(path string) *structs.Media {
 
 	// read .thumb.yml file in media directory
 	thumbFile := filepath.Join(mediaAbsPath, dir, ".thumbs.yml")
+	if _, err := os.Stat(thumbFile); os.IsNotExist(err) {
+		return nil
+	}
 
 	media, err := structs.ParseMediaFile(thumbFile)
 	if err != nil {
@@ -265,8 +276,6 @@ func (i *Indexer) getImageForPath(path string) *structs.Media {
 			return &m
 		}
 	}
-
-	log.Printf("WARN No media found for %q", path)
 
 	return nil
 }
