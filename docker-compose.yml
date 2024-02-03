@@ -22,6 +22,7 @@ services:
     environment:
       - INPUT_HOST=http://search:7700
       - INPUT_INDEX=/info
+      - INPUT_MEDIA=/media
       - INPUT_MASTER_KEY=secret
     volumes:
       - ../info:/info
