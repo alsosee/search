@@ -194,7 +194,7 @@ func (i *Indexer) addToIndex(paths []string, index string) error {
 		documents = append(documents, document)
 	}
 
-	for path, _ := range i.toUpdateThumb {
+	for path := range i.toUpdateThumb {
 		document, err := i.processFile(path)
 		if err != nil {
 			return fmt.Errorf("processing file %q: %w", path, err)
