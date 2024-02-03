@@ -195,6 +195,9 @@ func (i *Indexer) addToIndex(paths []string, index string) error {
 	}
 
 	for path := range i.toUpdateThumb {
+		if in(path, paths) {
+			continue
+		}
 		document, err := i.processFile(path)
 		if err != nil {
 			return fmt.Errorf("processing file %q: %w", path, err)
@@ -466,4 +469,13 @@ var reNonID = regexp.MustCompile("[^a-zA-Z0-9-_]")
 // only composed of alphanumeric characters (a-z A-Z 0-9), hyphens (-) and underscores (_).
 func formatID(id string) string {
 	return reNonID.ReplaceAllString(id, "_")
+}
+
+func in(needle string, haystack []string) bool {
+	for _, s := range haystack {
+		if s == needle {
+			return true
+		}
+	}
+	return false
 }
