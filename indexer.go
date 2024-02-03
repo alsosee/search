@@ -35,8 +35,8 @@ type Indexer struct {
 	// if they share the same thumbnail path
 	toUpdateThumb map[string]interface{} // path -> nil
 
-	infoDir  string
-	mediaDir string
+	infoDir      string
+	mediaAbsPath string
 }
 
 // NewIndexer creates a new Indexer.
@@ -44,19 +44,24 @@ func NewIndexer(
 	client *meilisearch.Client,
 	infoDir string,
 	mediaDir string,
-) *Indexer {
+) (*Indexer, error) {
+	mediaAbsPath, err := filepath.Abs(mediaDir)
+	if err != nil {
+		return nil, fmt.Errorf("getting absolute path: %w", err)
+	}
+
 	return &Indexer{
 		client:        client,
 		ctx:           context.Background(),
 		state:         make(map[string]string),
 		toUpdateThumb: make(map[string]interface{}),
 		infoDir:       infoDir,
-		mediaDir:      mediaDir,
-	}
+		mediaAbsPath:  mediaAbsPath,
+	}, nil
 }
 
 // Index reads files from the info directory and writes them to the MeiliSearch.
-func (i *Indexer) Index(stateFile, ignoreFile, index string) error {
+func (i *Indexer) Index(stateFile, ignoreFile, index, force string) error {
 	ignore, err := processIgnoreFile(filepath.Join(i.infoDir, ignoreFile))
 	if err != nil {
 		return fmt.Errorf("processing ignore file: %w", err)
@@ -100,7 +105,7 @@ func (i *Indexer) Index(stateFile, ignoreFile, index string) error {
 		return fmt.Errorf("reading state file: %w", err)
 	}
 
-	if err := i.updateIndex(state, index); err != nil {
+	if err := i.updateIndex(state, index, force); err != nil {
 		return fmt.Errorf("updating index: %w", err)
 	}
 
@@ -124,7 +129,14 @@ func (i *Indexer) addFile(path, relPath string) error {
 	return nil
 }
 
-func (i *Indexer) updateIndex(oldState map[string]string, index string) error {
+func (i *Indexer) updateIndex(oldState map[string]string, index, force string) error {
+	if force == "all" {
+		return i.addToIndexAll(index)
+	}
+	if force != "" {
+		return i.addToIndex([]string{force}, index)
+	}
+
 	// find deleted files
 	var toDelete []string
 	for path := range oldState {
@@ -190,6 +202,24 @@ func (i *Indexer) addToIndex(paths []string, index string) error {
 		documents = append(documents, document)
 	}
 
+	return i.addDocumentsToIndex(documents, index)
+}
+
+func (i *Indexer) addToIndexAll(index string) error {
+	documents := []*structs.Content{}
+
+	for path := range i.state {
+		document, err := i.processFile(path)
+		if err != nil {
+			return fmt.Errorf("processing file %q: %w", path, err)
+		}
+		documents = append(documents, document)
+	}
+
+	return i.addDocumentsToIndex(documents, index)
+}
+
+func (i *Indexer) addDocumentsToIndex(documents []*structs.Content, index string) error {
 	if len(documents) == 0 {
 		log.Printf("No documents to add to index %q", index)
 		return nil
@@ -262,14 +292,8 @@ func (i *Indexer) getImageForPath(path string, fanOut bool) *structs.Media {
 		dir = ""
 	}
 
-	mediaAbsPath, err := filepath.Abs(i.mediaDir)
-	if err != nil {
-		log.Printf("Error getting absolute path for %q: %v", i.mediaDir, err)
-		return nil
-	}
-
 	// read .thumb.yml file in media directory
-	thumbFile := filepath.Join(mediaAbsPath, dir, ".thumbs.yml")
+	thumbFile := filepath.Join(i.mediaAbsPath, dir, ".thumbs.yml")
 	if _, err := os.Stat(thumbFile); os.IsNotExist(err) {
 		return nil
 	}
@@ -286,9 +310,10 @@ func (i *Indexer) getImageForPath(path string, fanOut bool) *structs.Media {
 
 	var image *structs.Media
 	for _, m := range media {
+		mediaImage := m
 		mediaPath := filepath.Join(dir, removeFileExtention(m.Path))
 		if mediaPath == path {
-			image = &m
+			image = &mediaImage
 			break
 		}
 	}
@@ -298,7 +323,7 @@ func (i *Indexer) getImageForPath(path string, fanOut bool) *structs.Media {
 		// because data in the index is used to display the thumb.
 		for _, m := range media {
 			if m.ThumbPath == image.ThumbPath && m.Path != image.Path {
-				newPath := filepath.Join(dir, removeFileExtention(m.Path))
+				newPath := filepath.Join(dir, removeFileExtention(m.Path)+".yml")
 				if _, ok := i.toUpdateThumb[newPath]; !ok {
 					log.Printf("Adding to update list: %s", newPath)
 					i.toUpdateThumb[newPath] = nil
@@ -338,6 +363,7 @@ func (i *Indexer) waitForTask(taskID int64, timeout time.Duration) error {
 	return nil
 }
 
+// hash returns the CRC32 checksum of the file at the given path.
 func hash(path string) (string, error) {
 	file, err := os.Open(path)
 	if err != nil {

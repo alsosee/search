@@ -4,6 +4,11 @@ on:
   repository_dispatch:
     types: [index]
   workflow_dispatch:
+    inputs:
+      force:
+        description: 'Path to media to index, e.g. "Movies/John Wick". Leave empty for normal operation. Set to "all" to re-index all media.'
+        required: false
+        default: ""
 
 concurrency:
   group: index
@@ -48,6 +53,7 @@ jobs:
           host: https://search.alsosee.info
           index: info
           master_key: ${{ secrets.MEILISEARCH_MASTER_KEY }}
+          force: ${{ github.event.inputs.force }}
 
       - name: Commit and push
         shell: bash
