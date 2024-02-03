@@ -41,5 +41,5 @@ curl -X "POST" "http://127.0.0.1:7700/indexes" \
 Run the app:
 
 ```shell
-docker compose up app
+docker compose up indexer
 ```
