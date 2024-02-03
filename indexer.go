@@ -30,6 +30,11 @@ type Indexer struct {
 	state   map[string]string
 	muState sync.Mutex
 
+	// toUpdateThumb is a map of paths that need to be updated additionally.
+	// Processing a single document can trigger processing of another
+	// if they share the same thumbnail path
+	toUpdateThumb map[string]interface{} // path -> nil
+
 	infoDir  string
 	mediaDir string
 }
@@ -41,11 +46,12 @@ func NewIndexer(
 	mediaDir string,
 ) *Indexer {
 	return &Indexer{
-		client:   client,
-		ctx:      context.Background(),
-		state:    make(map[string]string),
-		infoDir:  infoDir,
-		mediaDir: mediaDir,
+		client:        client,
+		ctx:           context.Background(),
+		state:         make(map[string]string),
+		toUpdateThumb: make(map[string]interface{}),
+		infoDir:       infoDir,
+		mediaDir:      mediaDir,
 	}
 }
 
@@ -176,6 +182,14 @@ func (i *Indexer) addToIndex(paths []string, index string) error {
 		documents = append(documents, document)
 	}
 
+	for path, _ := range i.toUpdateThumb {
+		document, err := i.processFile(path)
+		if err != nil {
+			return fmt.Errorf("processing file %q: %w", path, err)
+		}
+		documents = append(documents, document)
+	}
+
 	if len(documents) == 0 {
 		log.Printf("No documents to add to index %q", index)
 		return nil
@@ -229,20 +243,20 @@ func (i *Indexer) processYAMLFile(path string) (*structs.Content, error) {
 
 	content.Source = path
 	content.ID = formatID(id)
-	content.Image = i.getImageForPath(id)
+	content.Image = i.getImageForPath(id, true)
 
 	// add image to Characters
 	for _, character := range content.Characters {
-		character.Image = i.getImageForPath(filepath.Join(id, "Characters", character.Name))
+		character.Image = i.getImageForPath(filepath.Join(id, "Characters", character.Name), false)
 		if character.Actor != "" {
-			character.ActorImage = i.getImageForPath("People/" + character.Actor)
+			character.ActorImage = i.getImageForPath("People/"+character.Actor, false)
 		}
 	}
 
 	return &content, nil
 }
 
-func (i *Indexer) getImageForPath(path string) *structs.Media {
+func (i *Indexer) getImageForPath(path string, fanOut bool) *structs.Media {
 	dir := filepath.Dir(path)
 	if dir == "." {
 		dir = ""
@@ -270,14 +284,30 @@ func (i *Indexer) getImageForPath(path string) *structs.Media {
 		return nil
 	}
 
+	var image *structs.Media
 	for _, m := range media {
 		mediaPath := filepath.Join(dir, removeFileExtention(m.Path))
 		if mediaPath == path {
-			return &m
+			image = &m
+			break
 		}
 	}
 
-	return nil
+	if fanOut && image != nil {
+		// Add other media that share the same ThumbPath for updating the index,
+		// because data in the index is used to display the thumb.
+		for _, m := range media {
+			if m.ThumbPath == image.ThumbPath && m.Path != image.Path {
+				newPath := filepath.Join(dir, removeFileExtention(m.Path))
+				if _, ok := i.toUpdateThumb[newPath]; !ok {
+					log.Printf("Adding to update list: %s", newPath)
+					i.toUpdateThumb[newPath] = nil
+				}
+			}
+		}
+	}
+
+	return image
 }
 
 func (i *Indexer) waitForTask(taskID int64, timeout time.Duration) error {
