@@ -7,15 +7,6 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// Character represents a character in a movie, tv show, etc.
-type Character struct {
-	Name       string
-	Actor      string `json:",omitempty"`
-	Voice      string `json:",omitempty"`
-	Image      *Media `json:",omitempty"`
-	ActorImage *Media `json:",omitempty"`
-}
-
 // oneOrMany represents a list of strings that can be passed as a single string in YAML.
 type oneOrMany []string
 
@@ -49,7 +40,8 @@ type Content struct {
 	HTML   string `yaml:"-" json:",omitempty"` // for Markdown files
 
 	// for everything
-	Name        string    `json:",omitempty"`
+	Name        string    `json:",omitempty"` // name of the file, used in the breadcrumbs
+	Title       string    `json:",omitempty"` // override for the name, used as page title, fallback to Name
 	Subtitle    string    `json:",omitempty"`
 	Year        int       `json:",omitempty"`
 	Author      string    `json:",omitempty"`
@@ -67,6 +59,9 @@ type Content struct {
 	DOD     string `json:",omitempty"` // date of death
 	Contact string `yaml:"contact" json:",omitempty"`
 
+	Founded  string `json:",omitempty"` // for companies
+	Released string `json:",omitempty"` // for games, ...
+
 	// general external links
 	Website         string   `json:",omitempty"`
 	Websites        []string `json:",omitempty"`
@@ -76,6 +71,7 @@ type Content struct {
 	Twitch          string   `json:",omitempty"`
 	YouTube         string   `json:",omitempty"`
 	IMDB            string   `json:",omitempty"`
+	TMDB            string   `json:",omitempty"`
 	Steam           string   `json:",omitempty"`
 	Netflix         string   `json:",omitempty"`
 	Spotify         string   `json:",omitempty"`
@@ -99,7 +95,9 @@ type Content struct {
 	Epic            string   `json:",omitempty"`
 	IGN             string   `yaml:"ign" json:",omitempty"`
 	Amazon          string   `json:",omitempty"`
+	PrimeVideo      string   `yaml:"prime_video" json:",omitempty"`
 	AppleTV         string   `yaml:"apple_tv" json:",omitempty"`
+	Peacock         string   `json:",omitempty"`
 	GooglePlay      string   `yaml:"google_play" json:",omitempty"`
 	MicrosoftStore  string   `yaml:"microsoft_store" json:",omitempty"`
 	Row8            string   `json:",omitempty"`
@@ -124,6 +122,7 @@ type Content struct {
 	Trailer        string        `json:",omitempty"`
 	Rating         string        `json:",omitempty"`
 	Length         time.Duration `json:",omitempty"`
+	Creators       oneOrMany     `json:",omitempty"`
 	Writers        oneOrMany     `json:",omitempty"`
 	Editor         string        `json:",omitempty"`
 	Directors      oneOrMany     `json:",omitempty"`
@@ -132,12 +131,58 @@ type Content struct {
 	Music          string        `json:",omitempty"`
 	Production     oneOrMany     `json:",omitempty"`
 	Distributor    string        `json:",omitempty"`
+	Network        string        `json:",omitempty"`
 	Characters     []*Character  `json:",omitempty"`
+
+	// for awards
+	Categories []Category `json:",omitempty"`
 
 	// unknown fields are stored in the Extra map
 	Extra map[string]interface{} `yaml:",inline" json:",omitempty"`
 
 	References []Reference `yaml:"refs" json:",omitempty"`
 
-	Image *Media `json:",omitempty"`
+	// fields populated by the generator
+	Image           *Media  `yaml:"-" json:",omitempty"`
+	Awards          []Award `yaml:"-" json:",omitempty"`
+	EditorAwards    []Award `yaml:"-" json:",omitempty"`
+	WritersAwards   []Award `yaml:"-" json:",omitempty"`
+	DirectorsAwards []Award `yaml:"-" json:",omitempty"`
+}
+
+// Character represents a character in a movie, tv show, etc.
+type Character struct {
+	Name       string
+	Actor      string `json:",omitempty"`
+	Voice      string `json:",omitempty"`
+	Image      *Media `json:",omitempty"`
+	ActorImage *Media `json:",omitempty"`
+
+	// populated by the generator
+	Awards []Award `yml:"-" json:",omitempty"`
+}
+
+type Award struct {
+	Category  string `json:",omitempty"`
+	Reference string `json:",omitempty"` // who gave the award
+}
+
+type Category struct {
+	Name   string `json:",omitempty"`
+	Winner Winner `json:",omitempty"`
+}
+
+type Winner struct {
+	Reference string    `yaml:"ref" json:",omitempty"` // full path to referenced content
+	Movie     string    `json:",omitempty"`
+	Game      string    `json:",omitempty"`
+	Series    string    `json:",omitempty"`
+	Person    string    `json:",omitempty"`
+	Actor     string    `json:",omitempty"`
+	Editor    string    `json:",omitempty"`
+	Track     string    `json:",omitempty"`
+	Directors oneOrMany `json:",omitempty"`
+	Writers   oneOrMany `json:",omitempty"`
+
+	Fallback string `yaml:"-" json:"-,omitempty"` // used to store the fallback value for template
 }

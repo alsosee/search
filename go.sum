@@ -1,5 +1,5 @@
-github.com/alsosee/finder v0.0.0-20240127004115-eed4870f4d9f h1:MimT9rrNRp1CEr8+Y36Aif9JhV7/VuJgvcrtdKQ7Msc=
-github.com/alsosee/finder v0.0.0-20240127004115-eed4870f4d9f/go.mod h1:zAxUgvyCHC5Sl0l6MQKjN5HvskbeFPXVbG0WJw7ivTY=
+github.com/alsosee/finder v0.0.0-20240207034049-0e1b6d9ad5e2 h1:DcLBFRjFyLVfEe8P5KCcSfQtSViSMooBBYWS4LQb7Po=
+github.com/alsosee/finder v0.0.0-20240207034049-0e1b6d9ad5e2/go.mod h1:zAxUgvyCHC5Sl0l6MQKjN5HvskbeFPXVbG0WJw7ivTY=
 github.com/andybalholm/brotli v1.0.4 h1:V7DdXeJtZscaqfNuAdSRuRFzuiKlHSC/Zh3zl9qY3JY=
 github.com/andybalholm/brotli v1.0.4/go.mod h1:fO7iG3H7G2nSZ7m0zPUDn85XEX2GTukHGRSepvi9Eig=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
