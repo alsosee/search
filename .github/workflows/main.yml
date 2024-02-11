@@ -5,6 +5,9 @@ on:
     branches:
       - main
   pull_request:
+  repository_dispatch:
+    types: [main]
+  workflow_dispatch:
 
 jobs:
   main:
@@ -40,7 +43,7 @@ jobs:
 
       - name: Build and push to CR
         uses: chuhlomin/actions/docker-build-push@main
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch'
         env:
           DOCKER_IMAGE: ghcr.io/alsosee/search
         with:
@@ -54,7 +57,7 @@ jobs:
           platforms: linux/amd64
 
       - name: Trigger index
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch'
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.PKG_TOKEN }}

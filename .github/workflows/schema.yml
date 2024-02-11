@@ -37,3 +37,10 @@ jobs:
           git add .
           git commit -m "chore: update structs"
           git push
+
+      - name: Trigger main
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.PKG_TOKEN }}
+          repository: alsosee/search
+          event-type: main
