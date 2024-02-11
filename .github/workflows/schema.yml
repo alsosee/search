@@ -5,6 +5,9 @@ on:
     types: [schema]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   schema:
     runs-on: ubuntu-latest
