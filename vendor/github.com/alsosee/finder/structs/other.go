@@ -6,6 +6,16 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+type PageData struct {
+	CurrentPath string
+	Dir         string
+	Breadcrumbs []Dir
+	Panels      Panels
+	Content     *Content
+	Timestamp   int64
+	Connections Connections
+}
+
 // Contents represents a list of contents, where key is a file path.
 // It is used to properly render references.
 type Contents map[string]Content
@@ -31,10 +41,11 @@ type Connections map[string]map[string][]string
 
 // File represents a file or directory in the file system.
 type File struct {
-	Name     string
-	Title    string // value from YAML "name" field, may contain colons
-	IsFolder bool   // used to render folder icon and to sort files
-	Image    *Media
+	Name      string
+	Title     string // value from YAML "name" field, may contain colons
+	IsFolder  bool   // used to render folder icon and to sort files
+	IsMissing bool   // for pages that have no source file; used to show striped background
+	Image     *Media
 }
 
 // ByNameFolderOnTop sorts files by name, with folders on top.
