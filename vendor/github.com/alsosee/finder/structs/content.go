@@ -133,9 +133,12 @@ type Content struct {
 	Directors      oneOrMany     `json:",omitempty"`
 	Cinematography string        `json:",omitempty"`
 	Producers      oneOrMany     `json:",omitempty"`
+	Screenplay     oneOrMany     `json:",omitempty"`
+	StoryBy        oneOrMany     `yaml:"story_by" json:",omitempty"`
+	DialoguesBy    oneOrMany     `yaml:"dialogues_by" json:",omitempty"`
 	Music          string        `json:",omitempty"`
 	Production     oneOrMany     `json:",omitempty"`
-	Distributor    string        `json:",omitempty"`
+	Distributors   oneOrMany     `json:",omitempty"`
 	Network        string        `json:",omitempty"`
 	Composers      oneOrMany     `json:",omitempty"`
 
