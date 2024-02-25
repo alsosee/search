@@ -14,3 +14,8 @@ test:
 # Install: https://golangci-lint.run/usage/install/
 lint:
 	@golangci-lint run ./... --out-format colored-line-number
+
+.PHONY: index
+## index: run Go application to index data
+index:
+	@go run ./...
