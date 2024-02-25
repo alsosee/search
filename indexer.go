@@ -328,8 +328,11 @@ func (i *Indexer) getImageForPath(path string, fanOut bool) *structs.Media {
 			if m.ThumbPath == image.ThumbPath && m.Path != image.Path {
 				newPath := filepath.Join(dir, removeFileExtention(m.Path)+".yml")
 				if _, ok := i.toUpdateThumb[newPath]; !ok {
-					log.Printf("Adding to update list: %s", newPath)
-					i.toUpdateThumb[newPath] = nil
+					// if file is existing
+					if _, err := os.Stat(filepath.Join(i.infoDir, newPath)); err == nil {
+						log.Printf("Adding to update list: %s", newPath)
+						i.toUpdateThumb[newPath] = nil
+					}
 				}
 			}
 		}
