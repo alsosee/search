@@ -3,7 +3,7 @@ module github.com/alsosee/search
 go 1.21.3
 
 require (
-	github.com/alsosee/finder v0.0.0-20240306025858-d98e98d0ce4c
+	github.com/alsosee/finder v0.0.0-20240308033603-4133f7af7117
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/meilisearch/meilisearch-go v0.26.1
 	github.com/sabhiram/go-gitignore v0.0.0-20210923224102-525f6e181f06
