@@ -55,4 +55,4 @@ jobs:
           git config --global user.email 'gha@alsosee.info'
           git add ".state"
           git commit -m "Update index state [skip ci]"
-          git push origin state
+          git push origin state-ru
