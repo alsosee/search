@@ -1,4 +1,4 @@
-# github.com/alsosee/finder v0.0.0-20240423043439-1034e39d0abc
+# github.com/alsosee/finder v0.0.0-20240429031503-d8e70ebcd442
 ## explicit; go 1.21
 github.com/alsosee/finder/structs
 # github.com/andybalholm/brotli v1.0.4
@@ -7,6 +7,8 @@ github.com/andybalholm/brotli
 # github.com/golang-jwt/jwt/v4 v4.5.0
 ## explicit; go 1.16
 github.com/golang-jwt/jwt/v4
+# github.com/gomarkdown/markdown v0.0.0-20231222211730-1d6d20845b47
+## explicit; go 1.12
 # github.com/jessevdk/go-flags v1.5.0
 ## explicit; go 1.15
 github.com/jessevdk/go-flags
