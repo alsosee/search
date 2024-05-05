@@ -1,16 +1,16 @@
-name: main
+name: main-ru
 
 on:
   push:
     branches:
-      - main
+      - ru
   pull_request:
   repository_dispatch:
-    types: [main]
+    types: [ru]
   workflow_dispatch:
 
 jobs:
-  main:
+  main-ru:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -28,7 +28,7 @@ jobs:
         run: go vet ./...
 
       - name: Lint
-        uses: golangci/golangci-lint-action@v4
+        uses: golangci/golangci-lint-action@v5
         with:
           version: latest
 
@@ -43,9 +43,9 @@ jobs:
 
       - name: Build and push to CR
         uses: chuhlomin/actions/docker-build-push@main
-        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch'
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/ru') || github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch'
         env:
-          DOCKER_IMAGE: ghcr.io/alsosee/search
+          DOCKER_IMAGE: ghcr.io/alsosee/search-ru
         with:
           registry: ghcr.io
           username: chuhlomin
@@ -57,9 +57,9 @@ jobs:
           platforms: linux/amd64
 
       - name: Trigger index
-        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch'
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/ru') || github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch'
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.PKG_TOKEN }}
           repository: alsosee/search
-          event-type: index
+          event-type: index-ru
