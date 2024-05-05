@@ -1,4 +1,4 @@
-name: main
+name: main-ru
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  main:
+  main-ru:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
