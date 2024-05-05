@@ -1,0 +1,44 @@
+name: Checkout
+description: "Checkout repositories for index action"
+inputs:
+  info:
+    description: "Repository with info files in format 'owner/repo'"
+    required: true
+  media:
+    description: "Repository with media files in format 'owner/repo'"
+    required: true
+  state:
+    description: "Repository with state file in format 'owner/repo'"
+    required: true
+  state_ref:
+    description: "Branch in state repository where state file is located"
+    required: false
+    default: "state"
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Clone info
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ inputs.info }}
+        path: info
+        token: ${{ secrets.PKG_TOKEN }}
+
+    - name: Clone media
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ inputs.media }}
+        path: media
+        token: ${{ secrets.PKG_TOKEN }}
+
+    - name: Clone info state
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ inputs.state }}
+        path: finder_state
+        ref: ${{ inputs.state_ref }}
+        token: ${{ secrets.PKG_TOKEN }}
