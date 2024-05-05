@@ -1,8 +1,8 @@
-name: index
+name: index-ru
 
 on:
   repository_dispatch:
-    types: [index]
+    types: [index-ru]
   workflow_dispatch:
     inputs:
       force:
@@ -11,30 +11,30 @@ on:
         default: ""
 
 concurrency:
-  group: index
+  group: index-ru
   cancel-in-progress: false
 
 jobs:
-  index:
+  index-ru:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: ./.github/actions/checkout
         with:
-          info: alsosee/info
-          media: alsosee/media
+          info: alsosee/ru
+          media: alsosee/media-ru
           state: alsosee/finder
-          state_ref: state
+          state_ref: state-ru
 
       - name: Run action
-        uses: ./
+        uses: ./.github/actions/ru
         with:
           info: ./info
           media: ./media
           state_file: ./finder_state/.state
           ignore_file: .ignore
           host: https://search.alsosee.info
-          index: info
+          index: ru
           master_key: ${{ secrets.MEILISEARCH_MASTER_KEY }}
           force: ${{ github.event.inputs.force }}
 
