@@ -28,6 +28,7 @@ jobs:
           media: alsosee/media
           state: alsosee/finder
           state_ref: state
+          token: ${{ secrets.PKG_TOKEN }}
 
       - name: Run action
         uses: ./

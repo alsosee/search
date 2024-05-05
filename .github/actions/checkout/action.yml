@@ -14,6 +14,10 @@ inputs:
     description: "Branch in state repository where state file is located"
     required: false
     default: "state"
+  token:
+    description: "Token for cloning repositories"
+    required: false
+    default: ""
 
 runs:
   using: composite
@@ -23,14 +27,14 @@ runs:
       with:
         repository: ${{ inputs.info }}
         path: info
-        token: ${{ secrets.PKG_TOKEN }}
+        token: ${{ inputs.token }}
 
     - name: Clone media
       uses: actions/checkout@v4
       with:
         repository: ${{ inputs.media }}
         path: media
-        token: ${{ secrets.PKG_TOKEN }}
+        token: ${{ inputs.token }}
 
     - name: Clone info state
       uses: actions/checkout@v4
@@ -38,4 +42,4 @@ runs:
         repository: ${{ inputs.state }}
         path: finder_state
         ref: ${{ inputs.state_ref }}
-        token: ${{ secrets.PKG_TOKEN }}
+        token: ${{ inputs.token }}

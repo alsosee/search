@@ -28,6 +28,7 @@ jobs:
           media: alsosee/media-ru
           state: alsosee/finder
           state_ref: state-ru
+          token: ${{ secrets.PKG_TOKEN }}
 
       - name: Run action
         uses: ./.github/actions/ru
