@@ -5,7 +5,7 @@ go 1.21.3
 require (
 	github.com/alsosee/finder v0.0.0-20240423043439-1034e39d0abc
 	github.com/jessevdk/go-flags v1.5.0
-	github.com/meilisearch/meilisearch-go v0.26.1
+	github.com/meilisearch/meilisearch-go v0.26.2
 	github.com/sabhiram/go-gitignore v0.0.0-20210923224102-525f6e181f06
 	gopkg.in/yaml.v3 v3.0.1
 )
