@@ -465,7 +465,7 @@ func removeFileExtention(path string) string {
 	return path
 }
 
-var reNonID = regexp.MustCompile("[^a-zA-Z0-9-_]")
+var reNonID = regexp.MustCompile(`[^a-zA-Zя0-9-_\p{Cyrillic}]`)
 
 // formatID formats an ID for MeiliSearch.
 // A document identifier can be of type integer or string,
