@@ -3,13 +3,13 @@ package main
 import (
 	"bufio"
 	"context"
+	"crypto/sha256"
 	"fmt"
 	"hash/crc32"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
-	"regexp"
 	"sort"
 	"strings"
 	"sync"
@@ -465,13 +465,13 @@ func removeFileExtention(path string) string {
 	return path
 }
 
-var reNonID = regexp.MustCompile(`[^a-zA-Zя0-9-_\p{Cyrillic}]`)
-
 // formatID formats an ID for MeiliSearch.
 // A document identifier can be of type integer or string,
 // only composed of alphanumeric characters (a-z A-Z 0-9), hyphens (-) and underscores (_).
 func formatID(id string) string {
-	return reNonID.ReplaceAllString(id, "_")
+	sha := sha256.New()
+	sha.Write([]byte(id))
+	return fmt.Sprintf("%x", sha.Sum(nil))
 }
 
 func in(needle string, haystack []string) bool {
