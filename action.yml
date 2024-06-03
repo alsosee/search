@@ -40,4 +40,4 @@ inputs:
 
 runs:
   using: docker
-  image: docker://ghcr.io/alsosee/search:latest
+  image: docker://ghcr.io/alsosee/search-ru:latest
