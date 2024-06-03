@@ -22,6 +22,8 @@ import (
 	"github.com/alsosee/finder/structs"
 )
 
+var errNotFound = fmt.Errorf("not found")
+
 // Indexer reads files and writes them to a MeiliSearch index.
 type Indexer struct {
 	client *meilisearch.Client
@@ -191,6 +193,10 @@ func (i *Indexer) addToIndex(paths []string, index string) error {
 	for _, path := range paths {
 		document, err := i.processFile(path)
 		if err != nil {
+			if err == errNotFound {
+				log.Printf("File %q not found, skipping", path)
+				continue
+			}
 			return fmt.Errorf("processing file %q: %w", path, err)
 		}
 		documents = append(documents, document)
@@ -263,6 +269,9 @@ func (i *Indexer) processFile(path string) (*structs.Content, error) {
 func (i *Indexer) processYAMLFile(path string) (*structs.Content, error) {
 	file, err := os.Open(filepath.Join(i.infoDir, path))
 	if err != nil {
+		if os.IsNotExist(err) {
+			return nil, errNotFound
+		}
 		return nil, fmt.Errorf("opening file: %w", err)
 	}
 	defer file.Close()
