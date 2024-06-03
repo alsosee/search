@@ -20,7 +20,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
+        with:
+          ref: ru
+        
       - name: Checkout repositories
         uses: ./.github/actions/checkout
         with:
@@ -31,7 +33,7 @@ jobs:
           token: ${{ secrets.PKG_TOKEN }}
 
       - name: Run action
-        uses: ./.github/actions/ru
+        uses: ./
         with:
           info: ./info
           media: ./media
