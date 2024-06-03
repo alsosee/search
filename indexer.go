@@ -134,7 +134,9 @@ func (i *Indexer) updateIndex(oldState map[string]string, index, force string) e
 		return i.addToIndexAll(index)
 	}
 	if force != "" {
-		return i.addToIndex([]string{force}, index)
+		// split force string by comma
+		forceList := strings.Split(force, ",")
+		return i.addToIndex(forceList, index)
 	}
 
 	// find deleted files

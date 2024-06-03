@@ -30,7 +30,7 @@ inputs:
     description: Master key of MeiliSearch
     required: true
   force:
-    description: Path to media to index, e.g. "Movies/John Wick". Leave empty for normal operation. Set to "all" to re-index all media.
+    description: Path to media to index, e.g. "Movies/John Wick.yml". Leave empty for normal operation. Set to "all" to re-index all media. Can be comma-separated list.
     required: false
     default: ""
   timeout:
