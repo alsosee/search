@@ -52,6 +52,7 @@ type Settings struct {
 	TypoTolerance        *TypoTolerance      `json:"typoTolerance,omitempty"`
 	Pagination           *Pagination         `json:"pagination,omitempty"`
 	Faceting             *Faceting           `json:"faceting,omitempty"`
+	Embedders            map[string]Embedder `json:"embedders,omitempty"`
 }
 
 // TypoTolerance is the type that represents the typo tolerance setting in Meilisearch
@@ -76,6 +77,14 @@ type Pagination struct {
 // Faceting is the type that represents the faceting setting in Meilisearch
 type Faceting struct {
 	MaxValuesPerFacet int64 `json:"maxValuesPerFacet"`
+}
+
+type Embedder struct {
+	Source           string `json:"source"`
+	ApiKey           string `json:"apiKey,omitempty"`
+	Model            string `json:"model,omitempty"`
+	Dimensions       int    `json:"dimensions,omitempty"`
+	DocumentTemplate string `json:"documentTemplate,omitempty"`
 }
 
 // Version is the type that represents the versions in Meilisearch
@@ -328,28 +337,35 @@ type CreateIndexRequest struct {
 //
 // Documentation: https://www.meilisearch.com/docs/reference/api/search#search-parameters
 type SearchRequest struct {
-	Offset                int64
-	Limit                 int64
-	AttributesToRetrieve  []string
-	AttributesToSearchOn  []string
-	AttributesToCrop      []string
-	CropLength            int64
-	CropMarker            string
-	AttributesToHighlight []string
-	HighlightPreTag       string
-	HighlightPostTag      string
-	MatchingStrategy      string
-	Filter                interface{}
-	ShowMatchesPosition   bool
-	ShowRankingScore      bool
-	Facets                []string
-	PlaceholderSearch     bool
-	Sort                  []string
-	Vector                []float64
-	HitsPerPage           int64
-	Page                  int64
-	IndexUID              string
-	Query                 string
+	Offset                  int64
+	Limit                   int64
+	AttributesToRetrieve    []string
+	AttributesToSearchOn    []string
+	AttributesToCrop        []string
+	CropLength              int64
+	CropMarker              string
+	AttributesToHighlight   []string
+	HighlightPreTag         string
+	HighlightPostTag        string
+	MatchingStrategy        string
+	Filter                  interface{}
+	ShowMatchesPosition     bool
+	ShowRankingScore        bool
+	ShowRankingScoreDetails bool
+	Facets                  []string
+	PlaceholderSearch       bool
+	Sort                    []string
+	Vector                  []float32
+	HitsPerPage             int64
+	Page                    int64
+	IndexUID                string
+	Query                   string
+	Hybrid                  *SearchRequestHybrid
+}
+
+type SearchRequestHybrid struct {
+	SemanticRatio float64
+	Embedder      string
 }
 
 type MultiSearchRequest struct {
