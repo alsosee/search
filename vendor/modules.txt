@@ -1,4 +1,4 @@
-# github.com/alsosee/finder v0.0.0-20240616032346-91cfd0737191
+# github.com/alsosee/finder v0.0.0-20240616160115-51089de1139c
 ## explicit; go 1.21
 github.com/alsosee/finder/structs
 # github.com/andybalholm/brotli v1.0.4
