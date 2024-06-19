@@ -4,7 +4,7 @@ go 1.21.3
 
 require (
 	github.com/alsosee/finder v0.0.0-20240619040854-da3f10e3f4aa
-	github.com/jessevdk/go-flags v1.5.0
+	github.com/jessevdk/go-flags v1.6.1
 	github.com/meilisearch/meilisearch-go v0.26.3
 	github.com/sabhiram/go-gitignore v0.0.0-20210923224102-525f6e181f06
 	gopkg.in/yaml.v3 v3.0.1
@@ -18,5 +18,5 @@ require (
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.37.1-0.20220607072126-8a320890c08d // indirect
-	golang.org/x/sys v0.16.0 // indirect
+	golang.org/x/sys v0.21.0 // indirect
 )
