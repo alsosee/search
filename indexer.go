@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"context"
+	"encoding/json"
 	"fmt"
 	"hash/crc32"
 	"io"
@@ -136,8 +137,16 @@ func (i *Indexer) updateIndex(oldState map[string]string, index, force string) e
 		return i.addToIndexAll(index)
 	}
 	if force != "" {
-		// split force string by comma
-		forceList := strings.Split(force, ",")
+		var forceList []string
+		if strings.HasPrefix(force, "[") {
+			// force is a JSON array
+			if err := json.Unmarshal([]byte(force), &forceList); err != nil {
+				return fmt.Errorf("parsing force list: %w", err)
+			}
+		} else {
+			// split force string by comma
+			forceList = strings.Split(force, ",")
+		}
 		return i.addToIndex(forceList, index)
 	}
 
