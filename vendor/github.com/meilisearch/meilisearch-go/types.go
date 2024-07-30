@@ -57,7 +57,7 @@ type Settings struct {
 
 // TypoTolerance is the type that represents the typo tolerance setting in Meilisearch
 type TypoTolerance struct {
-	Enabled             bool                `json:"enabled,omitempty"`
+	Enabled             bool                `json:"enabled"`
 	MinWordSizeForTypos MinWordSizeForTypos `json:"minWordSizeForTypos,omitempty"`
 	DisableOnWords      []string            `json:"disableOnWords,omitempty"`
 	DisableOnAttributes []string            `json:"disableOnAttributes,omitempty"`
@@ -361,6 +361,8 @@ type SearchRequest struct {
 	IndexUID                string
 	Query                   string
 	Hybrid                  *SearchRequestHybrid
+	RetrieveVectors         bool
+	RankingScoreThreshold   float64
 }
 
 type SearchRequestHybrid struct {
@@ -391,6 +393,21 @@ type SearchResponse struct {
 
 type MultiSearchResponse struct {
 	Results []SearchResponse `json:"results"`
+}
+
+type FacetSearchRequest struct {
+	FacetName            string   `json:"facetName,omitempty"`
+	FacetQuery           string   `json:"facetQuery,omitempty"`
+	Q                    string   `json:"q,omitempty"`
+	Filter               string   `json:"filter,omitempty"`
+	MatchingStrategy     string   `json:"matchingStrategy,omitempty"`
+	AttributesToSearchOn []string `json:"attributesToSearchOn,omitempty"`
+}
+
+type FacetSearchResponse struct {
+	FacetHits        []interface{} `json:"facetHits"`
+	FacetQuery       string        `json:"facetQuery"`
+	ProcessingTimeMs int64         `json:"processingTimeMs"`
 }
 
 // DocumentQuery is the request body get one documents method
