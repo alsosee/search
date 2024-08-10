@@ -46,6 +46,7 @@ type IndexInterface interface {
 	DeleteAllDocuments() (resp *TaskInfo, err error)
 	Search(query string, request *SearchRequest) (*SearchResponse, error)
 	SearchRaw(query string, request *SearchRequest) (*json.RawMessage, error)
+	SearchSimilarDocuments(param *SimilarDocumentQuery, resp *SimilarDocumentResult) error
 
 	GetTask(taskUID int64) (resp *Task, err error)
 	GetTasks(param *TasksQuery) (resp *TaskResult, err error)
@@ -74,6 +75,9 @@ type IndexInterface interface {
 	GetFilterableAttributes() (resp *[]string, err error)
 	UpdateFilterableAttributes(request *[]string) (resp *TaskInfo, err error)
 	ResetFilterableAttributes() (resp *TaskInfo, err error)
+	GetSearchCutoffMs() (resp int64, err error)
+	UpdateSearchCutoffMs(request int64) (resp *TaskInfo, err error)
+	ResetSearchCutoffMs() (resp *TaskInfo, err error)
 
 	WaitForTask(taskUID int64, options ...WaitParams) (*Task, error)
 }

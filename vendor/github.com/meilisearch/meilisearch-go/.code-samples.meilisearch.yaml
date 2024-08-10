@@ -98,6 +98,17 @@ multi_search_1: |-
       },
     },
   })
+facet_search_1: |-
+  client.Index("books").FacetSearch(&meilisearch.FacetSearchRequest{
+    FacetQuery: "fiction",
+    FacetName: "genres",
+    Filter: "rating > 3",
+  })
+facet_search_3: |-
+  client.Index("books").FacetSearch(&meilisearch.FacetSearchRequest{
+    FacetQuery: "c",
+    FacetName: "genres",
+  })
 delete_tasks_1: |-
   client.DeleteTaks(&meilisearch.DeleteTasksQuery{
     UIDS: []int64{1, 2},
@@ -236,6 +247,7 @@ update_settings_1: |-
     Faceting: &meilisearch.Faceting{
       MaxValuesPerFacet: 200,
     },
+    SearchCutoffMs: 150,
   }
   client.Index("movies").UpdateSettings(&settings)
 reset_settings_1: |-
@@ -645,7 +657,11 @@ getting_started_configure_settings: |-
 getting_started_faceting: |-
   client.Index("movies").UpdateFaceting(&meilisearch.Faceting{
       MaxValuesPerFacet: 2,
+      SortFacetValuesBy: {
+         "*": "count"
+      }
   })
+
 getting_started_pagination: |-
   client.Index("movies").UpdatePagination(&meilisearch.Pagination{
       MaxTotalHits: 500,
@@ -868,3 +884,33 @@ date_guide_sort_1: |-
       "release_timestamp:desc",
     },
   })
+search_parameter_reference_distinct_1: |-
+  client.Index("INDEX_NAME").Search("QUERY TERMS", &meilisearch.SearchRequest{
+    Distinct: "ATTRIBUTE_A",
+  })
+distinct_attribute_guide_distinct_parameter_1: |-
+  client.Index("products").Search("white shirt", &meilisearch.SearchRequest{
+    Distinct: "sku",
+  })
+distinct_attribute_guide_filterable_1: |-
+  filterableAttributes := []string{
+    "product_id",
+    "sku",
+    "url",
+  }
+  client.Index("products").UpdateFilterableAttributes(&filterableAttributes)
+get_similar_post_1: |-
+  resp := new(meilisearch.SimilarDocumentResult)
+  client.Index("INDEX_NAME").SearchSimilarDocuments(&meilisearch.SimilarDocumentQuery{
+    Id: "TARGET_DOCUMENT_ID",
+  }, resp)
+search_parameter_reference_ranking_score_threshold_1: |-
+  client.Index("INDEX_NAME").Search("badman", &meilisearch.SearchRequest{
+    RankingScoreThreshold: 0.2,
+  })
+get_search_cutoff_1: |-
+  client.Index("movies").GetSearchCutoffMs()
+update_search_cutoff_1: |-
+  client.Index("movies").UpdateSearchCutoffMs(150)
+reset_search_cutoff_1: |-
+  client.Index("books").ResetSearchCutoffMs()
